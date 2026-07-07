@@ -6,8 +6,8 @@ st.set_page_config(
     layout="wide",
 )
 
-# 견적 항목이 늘어나거나 미리보기가 길어져도 잘리지 않도록
-# 높이를 넉넉히 잡고 내부 스크롤을 허용합니다.
+# 항상 모바일 폭(단일 컬럼)으로 표시되며, 내부 JS가 콘텐츠 높이에 맞춰
+# iframe 높이를 자동으로 조절하므로 내용이 늘어나도 잘리지 않습니다.
 HTML_CODE = r"""
 <!DOCTYPE html>
 <html lang="ko">
@@ -67,18 +67,12 @@ HTML_CODE = r"""
   }
 
   main {
-    max-width: 1040px;
+    max-width: 480px;
     margin: 0 auto;
-    padding: 48px 16px 60px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-
-  @media (max-width: 800px) {
-    main {
-      grid-template-columns: 1fr;
-    }
+    padding: 32px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
   @media (max-width: 480px) {
@@ -268,8 +262,6 @@ HTML_CODE = r"""
 
   .download-btn:hover { background: var(--accent-dark); }
 
-  #history-card { grid-column: 1 / -1; }
-
   .history-search {
     display: flex;
     gap: 8px;
@@ -313,7 +305,7 @@ HTML_CODE = r"""
 
   @media print {
     header, .card:not(#result-card), .download-btn { display: none !important; }
-    main { grid-template-columns: 1fr; padding: 0; }
+    main { padding: 0; }
     #result-card { border: none; box-shadow: none; }
     body { background: var(--white); }
   }
@@ -533,10 +525,25 @@ HTML_CODE = r"""
   downloadBtn.addEventListener('click', () => {
     window.print();
   });
+
+  // Streamlit embeds this page in a fixed-height iframe. Since the layout is
+  // now a single mobile-width column, content height changes a lot as
+  // items/preview/history are added, so we resize the iframe itself to match.
+  function resizeFrame() {
+    try {
+      if (window.frameElement) {
+        window.frameElement.style.height = document.documentElement.scrollHeight + 'px';
+      }
+    } catch (e) {}
+  }
+  window.addEventListener('load', resizeFrame);
+  window.addEventListener('resize', resizeFrame);
+  new ResizeObserver(resizeFrame).observe(document.body);
+  setTimeout(resizeFrame, 100);
 </script>
 
 </body>
 </html>
 """
 
-components.html(HTML_CODE, height=1600, scrolling=True)
+components.html(HTML_CODE, height=900, scrolling=False)
