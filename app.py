@@ -37,20 +37,13 @@ HTML_CODE = r"""
 
   * { box-sizing: border-box; }
 
-  html {
-    background: #d9dee6;
-  }
-
   body {
-    margin: 0 auto;
-    max-width: 480px;
-    min-height: 100vh;
+    margin: 0;
     font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: 15px;
     line-height: 1.6;
     background: var(--page-bg);
     color: var(--text);
-    box-shadow: 0 0 24px rgba(15, 44, 76, 0.12);
   }
 
   header {
@@ -74,6 +67,8 @@ HTML_CODE = r"""
   }
 
   main {
+    max-width: 480px;
+    margin: 0 auto;
     padding: 32px 16px 48px;
     display: flex;
     flex-direction: column;
@@ -312,7 +307,7 @@ HTML_CODE = r"""
     header, .card:not(#result-card), .download-btn { display: none !important; }
     main { padding: 0; }
     #result-card { border: none; box-shadow: none; }
-    body { background: var(--white); box-shadow: none; max-width: none; }
+    body { background: var(--white); }
   }
 </style>
 </head>
